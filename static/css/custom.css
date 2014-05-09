@@ -1,0 +1,39 @@
+.sidebar {
+    position: fixed;
+    top: 51px;
+    bottom: 0px;
+    left: 0px;
+    z-index: 1000;
+    display: block;
+    padding: 20px;
+    overflow-x: hidden;
+    overflow-y: auto;
+    background-color: #F5F5F5;
+    border-right: 1px solid #EEE;
+}
+
+.main {
+    padding: 50px;
+    padding-right: 40px;
+    padding-left: 40px;
+}
+
+.article {
+    border: 1px #f3f3f3 solid;
+    height: 125px;
+    vertical-align: middle;
+}
+
+.voting-block {
+    height: 100px;
+    width: 100px;
+    border: 1px lightblue solid;
+    padding: 0px;
+    vertical-align: middle;
+}
+
+.voting-icon {
+    text-align: center;
+    padding-top: 10px;
+    border: 1px lightcyan solid;
+}

@@ -1,0 +1,11 @@
+<div class="panel-body">
+    <div class="panel-default panel">
+        <p><b>Left by:</b> {{ child.submitted_by }}
+            <b>on</b> {{ child.submitted_on|date:"DATETIME_FORMAT" }}</p>
+
+        <p>{{ child.child.text }}</p>
+        {% for children in child.children %}
+            {% include "commentchildren.html" %}
+        {% endfor %}
+    </div>
+</div>

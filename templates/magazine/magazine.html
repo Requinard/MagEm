@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h2>{{ mag.name|capfirst }}</h2>
+    {% if articles %}
+        {% for article in articles %}
+            <div class="row article">
+                <div class="col-sm-2 hidden-xs voting-block">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-sm-3 voting-icon">
+                                <a href="#">X</a>
+                            </div>
+                            <div class="col-sm-3 voting-icon">
+                                <a href="#">X</a>
+                            </div>
+                            <div class="col-sm-3 voting-icon">
+                                <a href="#">X</a>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-3 voting-icon">
+                                <a href="#">X</a>
+                            </div>
+                            <div class="col-sm-3 voting-icon">
+                                <a href="#">X</a>
+                            </div>
+                            <div class="col-sm-3 voting-icon">
+                                <a href="#">X</a>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-3 voting-icon">
+                                <a href="#">X</a>
+                            </div>
+                            <div class="col-sm-3 voting-icon">
+                                <a href="#">X</a>
+                            </div>
+                            <div class="col-sm-3 voting-icon">
+                                <a href="#" onclick="">X</a>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="col-sm-9">
+                    <h3>{{ forloop.counter }}. <a href="{{ article.link }}" target="_blanks">{{ article.name }}</a></h3>
+
+                    <p><b>Submitted on</b>: {{ article.submitted_on|date:"DATETIME_FORMAT" }}
+                        <b>by</b> {{ article.submitted_by.username }}</p>
+
+                    <p><a href="{% url 'magazine:article' article.id %}">Comments</a></p>
+                </div>
+            </div>
+        {% endfor %}
+    {% else %}
+        <div class="row">
+            <div class="col-sm-12">
+                <p>There's nothing here!</p>
+            </div>
+        </div>
+    {% endif %}
+{% endblock %}

@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h2>Submit a link</h2>
+    <form method="post" action="{% url 'magazine:submit' %}">
+        <div class="row">
+            <div class="col-sm-6">
+                {% csrf_token %}
+                <label>What's your link?</label>
+                <input class="form-control" name="link">
+                <br/>
+                <label>What's the article named?</label>
+                <input class="form-control" name="name">
+                <br/>
+
+                <label>To what magazines do you wish to post this? (Seperate with commas)</label>
+                <textarea class="form-control" rows="3" placeholder="technology, news" name="mags"></textarea>
+                <br/>
+
+                <button class="btn btn-primary btn-block" type="submit">Submit</button>
+            </div>
+        </div>
+    </form>
+{% endblock %}

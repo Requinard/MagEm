@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h2>Creating a new magazine</h2>
+    <form method="post" action="{% url 'magazine:createmag' %}">
+        {% csrf_token %}
+        <label>What should your new magazine be called?</label>
+        <input type="text" class="form-control" name="name">
+        <br/>
+        <button type="submit" class="btn btn-block btn-success">Submit</button>
+    </form>
+{% endblock %}
