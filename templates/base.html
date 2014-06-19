@@ -3,94 +3,103 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>WebMag</title>
-    <link rel="stylesheet" href="{% static 'css/bootstrap.css' %}">
-    <link rel="stylesheet" href="{% static 'css/custom.css' %}">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+	<title>WebMag</title>
+	<link rel="stylesheet" href="{% static 'css/bootstrap.css' %}">
+	<link rel="stylesheet" href="{% static 'css/custom.css' %}">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
 </head>
 <body>
 
 <div class="container-fluid">
-    <div class="row">
-        <div class="col-md-2 sidebar hidden-xs hidden-sm">
-            {% if user.is_authenticated %}
-                <h2>Your subscriptions</h2>
-                <ul class="nav nav-sidebar">
-                    {% if subscriptions %}
-                        {% for sub in subscriptions %}
-                            <li>
-                                <a href="{% url "magazine:magazine" sub.subscribed_to.name %}">{{ sub.subscribed_to.name|capfirst }}</a>
-                            </li>
-                        {% endfor %}
-                    {% else %}
-                        <li class="navbar-text">There seems to be nothing here!</li>
-                    {% endif %}
-                </ul>
+	<div class="row">
+		<div class="col-md-2 col-xs-12 sidebar hidden-xs hidden-sm">
+			{% if user.is_authenticated %}
+				<h2>Hi {{ user }}</h2>
+				<h3>While you were gone</h3>
+				<ul class="nav nav-sidebar">
+					<li><a href="#">Messages</a> </li>
+				</ul>
+				{% if mag or article %}
+					<h3>Magazine actions</h3>
+					<ul class="nav nav-sidebar">
+						{% if magazine in subscriptions %}
+							<li><a href="#">Subscribe</a></li>
+						{% else %}
+							<li><a href="#">Unsubscribe</a></li>
+						{% endif %}
+						<li><a href="{% url 'magazine:submit' %}">Submit a link</a></li>
+					</ul>
+				{% endif %}
+				<h3>Actions</h3>
+				<ul class="nav">
+					<li><a href="{% url 'magazine:createmag' %}">Create a Magazine</a></li>
+					<li><a href="#">Your settings</a></li>
+				</ul>
+				<h3>Your Magazines</h3>
+				<ul class="nav nav-sidebar">
+					{% if subscriptions %}
+						{% for sub in subscriptions %}
+							<li>
+								<a href="{% url "magazine:magazine" sub.subscribed_to.name %}">{{ sub.subscribed_to.name|capfirst }}</a>
+							</li>
+						{% endfor %}
+					{% else %}
+						<li class="navbar-text">There seems to be nothing here!</li>
+					{% endif %}
+				</ul>
 
-                {% if mag or article %}
-                    <h2>Magazine actions</h2>
-                    <ul class="nav nav-sidebar">
-                        {% if magazine in subscriptions %}
-                            <li><a href="#">Subscribe</a></li>
-                        {% else %}
-                            <li><a href="#">Unsubscribe</a></li>
-                        {% endif %}
-                        <li><a href="{% url 'magazine:submit' %}">Submit a link</a></li>
-                    </ul>
-                    <h2>Other actions</h2>
-                    <ul class="nav">
-                        <li><a href="{% url 'magazine:createmag' %}">Create a Magazine</a></li>
-                        <li><a href="#">Your settings</a></li>
-                    </ul>
-                {% endif %}
-            {% else %}
-                <form method="post" action="{% url 'magazine:login' %}">
-                    <h3>Log in</h3>
-                    {% csrf_token %}
-                    <input class="form-control" placeholder="user" name="user">
-                    <input class="form-control" type="password" placeholder="password" name="password">
-                    <button class="btn btn-block btn-success">Log in</button>
-                </form>
-            {% endif %}
-        </div>
-        <div class="col-sm-12 col-md-10 col-md-offset-2 main">
-            {% block content %}
+			{% else %}
+				<form method="post" action="{% url 'magazine:login' %}">
+					<h3>Log in</h3>
+					{% csrf_token %}
+					<input class="form-control" placeholder="user" name="user">
+					<input class="form-control" type="password" placeholder="password" name="password">
+					<button class="btn btn-block btn-success">Log in</button>
+				</form>
+			{% endif %}
+		</div>
+		<div class="col-sm-12 col-md-10 col-md-offset-2 main">
+			{% block content %}
 
-            {% endblock %}
-        </div>
-    </div>
-    <nav class="navbar navbar-default navbar-fixed-top navbar-inverse" role="navigation">
-        <div class="container-fluid">
-            <div class="navbar-header nav">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-collapse">
-                    <span class="sr-only">Navigation</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                <a class="navbar-brand">WebMag</a>
-            </div>
+			{% endblock %}
+		</div>
+	</div>
+	<nav class="navbar navbar-default navbar-fixed-top navbar-inverse" role="navigation">
+		<div class="container">
+			<div class="navbar-header nav">
+				<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-collapse">
+					<span class="sr-only">Navigation</span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+				</button>
+				<a class="navbar-brand">WebMag</a>
+			</div>
 
-            <div class="collapse navbar-collapse" id="navbar-collapse">
-                <ul class="nav navbar-nav">
-                    <li><a class="btn btn-block btn-default" onclick="$('.sidebar').toggle('slow');"
-                           style="background-color: transparent;">Hide Sidebar</a></li>
-                </ul>
-                <ul class="nav navbar-nav  navbar-right">
-                    <li><a href="{% url "magazine:submit" %}">Submit</a></li>
-                </ul>
-            </div>
-        </div>
-    </nav>
+			<div class="collapse navbar-collapse" id="navbar-collapse">
+				<ul class="nav navbar-nav">
+					<li><a class="btn btn-block btn-default hidden-md hidden-lg" onclick="$('.sidebar').toggleClass('hidden-xs hidden-sm');"
+					       style="background-color: transparent;">Hide Sidebar</a></li>
+				</ul>
+				<ul class="nav navbar-nav  navbar-right">
+					{% if user.is_staff %}
+						<li><a href="/api/">API</a></li>
+						<li><a href="/admin/">Admin</a></li>
+					{% endif %}
+					<li><a href="{% url "magazine:submit" %}">Submit</a></li>
+				</ul>
+			</div>
+		</div>
+	</nav>
 
-    <script type="application/javascript" src="{% static 'js/jquery.js' %}"></script>
-    <script type="application/javascript" src="{% static 'js/app.js' %}"></script>
-    <script type="application/javascript" src="{% static 'js/bootstrap.js' %}"></script>
+	<script type="application/javascript" src="{% static 'js/jquery.js' %}"></script>
+	<script type="application/javascript" src="{% static 'js/app.js' %}"></script>
+	<script type="application/javascript" src="{% static 'js/bootstrap.js' %}"></script>
 
 
 
-    {% block scripts %}
+	{% block scripts %}
 
-    {% endblock %}
+	{% endblock %}
 </body>
 </html>

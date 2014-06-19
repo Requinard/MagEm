@@ -57,7 +57,7 @@ def submit(request):
 
             a.save()
 
-        return redirect("/magazine/m/" + mags[0] + "/")
+        return redirect("/m/" + mags[0] + "/")
 
     return render(request, "magazine/submit.html", context)
 
@@ -91,7 +91,7 @@ def article(request, thread):
     return render(request, "magazine/article.html", context)
 
 
-def login(request):
+def loginUser(request):
     if request.user.is_authenticated():
         return redirect("/magazine/")
     else:
@@ -120,8 +120,8 @@ def createmagazine(request):
         mag = Magazine()
 
         mag.name = post['name']
+        mag.name.replace(' ', '')
         mag.creator = request.user
-
         mag.save()
 
-        return redirect("/magazine/m/" + mag.name + "/")
+        return redirect("/m/" + mag.name + "/")
