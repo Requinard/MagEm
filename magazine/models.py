@@ -20,10 +20,13 @@ class Article(models.Model):
 
 	name = models.CharField(max_length=100, default="Lorem Ipsum")
 
-	submitted_by = models.ForeignKey(User)
+	submitted_by = models.ForeignKey(User, null=True)
 
 	submitted_to = models.ForeignKey(Magazine)
 	submitted_on = models.DateTimeField(auto_now=True)
+
+	def __str__(self):
+		return self.name
 
 
 class Subscription(models.Model):
@@ -45,7 +48,7 @@ class Comment(models.Model):
 
 class Vote(models.Model):
 	article = models.ForeignKey(Article)
-	mag = models.ForeignKey(Magazine)
+	mag = models.ForeignKey(Magazine, null=True)
 	user = models.ForeignKey(User)
 	constructive = models.BooleanField(default=True)
 	agree = models.BooleanField(default=True)

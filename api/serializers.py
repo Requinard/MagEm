@@ -4,8 +4,8 @@ from magazine.models import Article, Magazine, Vote
 
 
 class ArticleSerializers(serializers.ModelSerializer):
-    class Meta:
-        model = Article
+	class Meta:
+		model = Article
 
 
 class MagazineSerializers(serializers.ModelSerializer):
@@ -16,4 +16,3 @@ class MagazineSerializers(serializers.ModelSerializer):
 class VoteSerializers(serializers.ModelSerializer):
 	class Meta:
 		model = Vote
-
