@@ -8,5 +8,5 @@ urlpatterns = patterns('',
                        url(r'^submit/$', views.submit, name='submit'),
                        url(r'^login/$', views.login, name="login"),
                        url(r'^createmag/$', views.createmagazine, name="createmag"),
-                       url(r'$', views.index, name="index"),
+                       url(r'^', views.index, name="index"),
 )
