@@ -5,12 +5,12 @@
     {% if articles %}
         {% for article in articles %}
             <div class="row article">
-                <div class="col-xs-2">
+                <div class="col-md-2 hidden-xs hidden-sm">
                     <div class="status-circle">
 
                     </div>
                 </div>
-                <div class="col-xs-9">
+                <div class="col-md-9">
                     <h3>{{ forloop.counter }}. <a href="{{ article.link }}" target="_blanks">{{ article.name }}</a></h3>
 
                     <p><b>Submitted on</b>: {{ article.submitted_on|date:"DATETIME_FORMAT" }}

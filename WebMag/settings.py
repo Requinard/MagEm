@@ -39,6 +39,7 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'django_evolution',
     'magazine',
+    'rest_framework'
 )
 
 MIDDLEWARE_CLASSES = (

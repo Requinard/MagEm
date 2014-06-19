@@ -6,6 +6,7 @@ admin.autodiscover()
 
 urlpatterns = patterns(
     '',
+    url('^api/', include('api.urls')),
     url(r'^admin/', include(admin.site.urls)),
     url(r'^', include('magazine.urls', namespace="magazine")),
 )
