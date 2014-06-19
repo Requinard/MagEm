@@ -6,6 +6,8 @@ import views
 
 router = DefaultRouter()
 router.register(r'article', views.ArticleViewSet)
+router.register(r'magazine', views.MagazineViewSet)
+router.register(r'vote', views.VoteViewSet)
 
 urlpatterns = patterns(
     '',
