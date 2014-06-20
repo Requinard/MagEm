@@ -17,7 +17,7 @@
 				<h2>Hi {{ user }}</h2>
 				<h3>While you were gone</h3>
 				<ul class="nav nav-sidebar">
-					<li><a href="#">Messages</a> </li>
+					<li><a href="#">Messages</a></li>
 				</ul>
 				{% if mag or article %}
 					<h3>Magazine actions</h3>
@@ -25,7 +25,7 @@
 						{% if magazine in subscriptions %}
 							<li><a href="#">Subscribe</a></li>
 						{% else %}
-							<li><a href="#">Unsubscribe</a></li>
+							<li><a href="#" class="unsubscribe" magazine="{{ mag.id }}">Unsubscribe</a></li>
 						{% endif %}
 						<li><a href="{% url 'magazine:submit' %}">Submit a link</a></li>
 					</ul>
@@ -67,7 +67,8 @@
 	<nav class="navbar navbar-default navbar-fixed-top navbar-inverse" role="navigation">
 		<div class="container">
 			<div class="navbar-header nav">
-				<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-collapse">
+				<button type="button" class="btn pull-right"
+				        onclick="$('.sidebar').toggleClass('hidden-xs hidden-sm');">
 					<span class="sr-only">Navigation</span>
 					<span class="icon-bar"></span>
 					<span class="icon-bar"></span>
@@ -78,7 +79,8 @@
 
 			<div class="collapse navbar-collapse" id="navbar-collapse">
 				<ul class="nav navbar-nav">
-					<li><a class="btn btn-block btn-default hidden-md hidden-lg" onclick="$('.sidebar').toggleClass('hidden-xs hidden-sm');"
+					<li><a class="btn btn-block btn-default hidden-md hidden-lg"
+					       onclick="$('.sidebar').toggleClass('hidden-xs hidden-sm');"
 					       style="background-color: transparent;">Hide Sidebar</a></li>
 				</ul>
 				<ul class="nav navbar-nav  navbar-right">

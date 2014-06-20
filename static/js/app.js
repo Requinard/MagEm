@@ -37,3 +37,13 @@ $(".status-circle").click(function (e) {
 		console.log(response)
 	})
 });
+
+$(".unsubscribe").click(function (e) {
+	e.preventDefault();
+
+	var payload = {
+		"subscribed_to": $(this).attributes['magazine']
+	}
+
+	$.
+})
