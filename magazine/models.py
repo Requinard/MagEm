@@ -66,6 +66,6 @@ class Vote(models.Model):
 		else:
 			response += "Disagree"
 
-		response = response.join(" by " + self.user_voted)
+		response = response.join(" by " + self.user_voted.username)
 
 		return response
