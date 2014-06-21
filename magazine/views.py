@@ -46,10 +46,10 @@ class SubmitView(View):
 		for mag in mags:
 			a = Article()
 
-			a.submitted_to = get_object_or_404(Magazine, name=str(mag).replace(" ", ""))
-			a.name = post['name']
-			a.link = post['link']
-			a.submitted_by = self.request.user
+			a.magazine_posted = get_object_or_404(Magazine, name=str(mag).replace(" ", ""))
+			a.article_name = post['name']
+			a.hyperlink = post['link']
+			a.posted_by = self.request.user
 
 			a.save()
 
@@ -68,13 +68,13 @@ class ArticleView(View):
 	def post(self, request, thread):
 		comment = Comment()
 
-		comment.submitted_by = self.request.user
-		comment.text = self.request.POST['text']
-		comment.article_on = Article.objects.get(id=thread)
+		comment.posted_by = self.request.user
+		comment.post_body = self.request.POST['text']
+		comment.article_related = Article.objects.get(id=thread)
 
 		comment.save()
 
-		return ("magazine:article", comment.article_on.id)
+		return ("magazine:article", comment.article_related.id)
 
 
 class LoginView(View):
@@ -115,7 +115,7 @@ class CreateMagazineView(View):
 		# Subscribe author
 		subscription = Subscription()
 
-		subscription.subscribed_to = mag
+		subscription.magazine_subscribed = mag
 		subscription.subscriber = self.request.user
 
 		subscription.save()
