@@ -1,127 +1,123 @@
-from django.shortcuts import render, get_object_or_404, get_list_or_404, redirect
+from django.shortcuts import render, get_object_or_404, redirect
 from django.http import HttpResponse
 from django.contrib.auth import authenticate, login
-from django.contrib.auth.models import User
+from django.views.generic import View
 
 from .models import *
 
 
-def UserItems(request, context):
-    if request.user.is_authenticated():
-        subscription = Subscription.objects.filter(subscriber=request.user)
-        context['subscriptions'] = subscription
-
-        context['user'] = request.user
-
-
-# Create your views here.
-def index(request):
-    context = {}
-
-    UserItems(request, context)
-
-    return render(request, "magazine/index.html", context)
+class Functions:
+	@staticmethod
+	def GetUserSubscriptions(request, context):
+		if request.user.is_authenticated():
+			subscription = Subscription.objects.filter(subscriber=request.user)
+			context['subscriptions'] = subscription
+			context['user'] = request.user
 
 
-def magazine(request, mag):
-    context = {}
-
-    UserItems(request, context)
-
-    mag = get_object_or_404(Magazine, name=mag)
-    context['mag'] = mag
-
-    articles = Article.objects.filter(submitted_to=mag)
-    context['articles'] = articles
-
-    return render(request, "magazine/magazine.html", context)
+class IndexView(View):
+	def get(self, *args, **kwargs):
+		context = {}
+		Functions.GetUserSubscriptions(self.request, context)
+		return render(self.request, "magazine/index.html", context)
 
 
-def submit(request):
-    context = {}
+class MagazineView(View):
+	def get(self, request, mag):
+		context = {}
+		Functions.GetUserSubscriptions(self.request, context)
 
-    UserItems(request, context)
+		context['mag'] = get_object_or_404(Magazine, name=mag)
+		context['articles'] = Article.objects.filter(submitted_to=context['mag'])
 
-    if request.POST:
-        post = request.POST
-
-        mags = str(post['mags']).split(',')
-
-        for mag in mags:
-            a = Article()
-
-            a.submitted_to = get_object_or_404(Magazine, name=str(mag).replace(" ", ""))
-            a.name = post['name']
-            a.link = post['link']
-            a.submitted_by = request.user
-
-            a.save()
-
-        return redirect("/m/" + mags[0] + "/")
-
-    return render(request, "magazine/submit.html", context)
+		return render(self.request, "magazine/magazine.html", context)
 
 
-def article(request, thread):
-    context = {}
+class SubmitView(View):
+	def get(self, *args, **kwargs):
+		context = {}
+		Functions.GetUserSubscriptions(self.request, context)
+		return render(self.request, "magazine/submit.html", context)
 
-    print("getting items")
-    UserItems(request, context)
+	def post(self, *args, **kwargs):
+		post = self.request.POST
+		mags = str(post['mags']).split(',')
 
-    print ("getting article")
-    art = get_object_or_404(Article, id=int(thread))
-    context['article'] = art
+		for mag in mags:
+			a = Article()
 
-    if request.POST:
-        print "saving comment"
-        com = Comment()
+			a.submitted_to = get_object_or_404(Magazine, name=str(mag).replace(" ", ""))
+			a.name = post['name']
+			a.link = post['link']
+			a.submitted_by = self.request.user
 
-        com.submitted_by = request.user
-        com.text = request.POST['text']
-        com.article_on = art
+			a.save()
 
-        com.save()
-
-        print com
-
-    print("getting comment")
-    comments = Comment.objects.filter(article_on=art)
-    context['comments'] = comments
-
-    return render(request, "magazine/article.html", context)
+		return redirect("magazine:magazine", mag[0].name)
 
 
-def loginUser(request):
-    if request.user.is_authenticated():
-        return redirect("/magazine/")
-    else:
-        user = authenticate(username=request.POST['user'], password=request.POST['password'])
+class ArticleView(View):
+	def get(self, request, thread):
+		context = {}
+		Functions.GetUserSubscriptions(request, context)
 
-        if user is not None:
-            if user.is_active:
-                login(request, user)
-                return redirect("/magazine/")
-            else:
-                return HttpResponse("You were banned!")
-        else:
-            return HttpResponse("The password or username was incorrect")
+		context['article'] = Article.objects.get(id=thread)
+		context['comments'] = Comment.objects.filter(article_on=context['article'])
+		return render(request, "magazine/article.html", context)
+
+	def post(self, request, thread):
+		comment = Comment()
+
+		comment.submitted_by = self.request.user
+		comment.text = self.request.POST['text']
+		comment.article_on = Article.objects.get(id=thread)
+
+		comment.save()
+
+		return ("magazine:article", comment.article_on.id)
 
 
-def createmagazine(request):
-    context = {}
+class LoginView(View):
+	def get(self, *args, **kwargs):
+		return redirect("magazine:index")
 
-    UserItems(request, context)
+	def post(self, request, *args, **kwargs):
+		user = authenticate(username=request.POST['user'], password=request.POST['password'])
 
-    if not request.POST:
-        return render(request, 'magazine/newmagazine.html', context)
-    else:
-        post = request.POST
+		if user is not None:
+			if user.is_active:
+				login(request, user)
+				return redirect("magazine:index")
+			else:
+				return HttpResponse("You were banned!")
+		else:
+			return HttpResponse("The password or username was incorrect")
 
-        mag = Magazine()
 
-        mag.name = post['name']
-        mag.name.replace(' ', '')
-        mag.creator = request.user
-        mag.save()
+class CreateMagazineView(View):
+	def get(self, *args, **kwargs):
+		context = {}
+		Functions.GetUserSubscriptions(self.request, context)
 
-        return redirect("/m/" + mag.name + "/")
+		return render(self.request, "magazine/newmagazine.html", context)
+
+	def post(self, *args, **kwargs):
+		post = self.request.POST
+
+		# Create magazine
+		mag = Magazine()
+
+		mag.name = post['name'].replace(" ", "").lower()
+		mag.creator = self.request.user
+
+		mag.save()
+
+		# Subscribe author
+		subscription = Subscription()
+
+		subscription.subscribed_to = mag
+		subscription.subscriber = self.request.user
+
+		subscription.save()
+
+		return redirect("magazine:magazine", mag.name)
