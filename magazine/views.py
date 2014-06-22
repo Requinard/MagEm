@@ -32,7 +32,7 @@ class Functions:
 		total_score += (math.log10(450 * agreedness) * 25)
 		total_score += (math.log10(450 * constructiveness) * 25)
 		total_score += ((age_diff / 1500) + 100)
-		total_score /= 3
+		total_score = total_score / 3
 
 		item.total_score = total_score
 
@@ -57,7 +57,7 @@ class MagazineView(View):
 		for article in context['articles']:
 			Functions.ComputePostScore(request, context, article)
 
-		context['articles'] = context['articles'].order_by("-total_score")
+		# context['articles'] = context['articles'].order_by("-total_score")
 		return render(self.request, "magazine/magazine.html", context)
 
 

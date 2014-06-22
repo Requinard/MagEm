@@ -40,6 +40,7 @@ INSTALLED_APPS = (
 	'django_evolution',
 	'magazine',
 	'rest_framework',
+	'debug_toolbar'
 )
 
 MIDDLEWARE_CLASSES = (
