@@ -1,6 +1,4 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from django.http import HttpResponse
-from django.contrib.auth import authenticate, login
 from django.views.generic import View
 
 from .models import *
@@ -28,7 +26,7 @@ class MagazineView(View):
 		Functions.GetUserSubscriptions(self.request, context)
 
 		context['mag'] = get_object_or_404(Magazine, name=mag)
-		context['articles'] = Article.objects.filter(submitted_to=context['mag'])
+		context['articles'] = Article.objects.filter(magazine_posted=context['mag'])
 
 		return render(self.request, "magazine/magazine.html", context)
 
@@ -77,23 +75,6 @@ class ArticleView(View):
 		return ("magazine:article", comment.article_related.id)
 
 
-class LoginView(View):
-	def get(self, *args, **kwargs):
-		return redirect("magazine:index")
-
-	def post(self, request, *args, **kwargs):
-		user = authenticate(username=request.POST['user'], password=request.POST['password'])
-
-		if user is not None:
-			if user.is_active:
-				login(request, user)
-				return redirect("magazine:index")
-			else:
-				return HttpResponse("You were banned!")
-		else:
-			return HttpResponse("The password or username was incorrect")
-
-
 class CreateMagazineView(View):
 	def get(self, *args, **kwargs):
 		context = {}
@@ -121,3 +102,26 @@ class CreateMagazineView(View):
 		subscription.save()
 
 		return redirect("magazine:magazine", mag.name)
+
+
+class SubscribeView(View):
+	def get(self, request, mag):
+		print "subscribing"
+		sub = Subscription.objects.filter(subscriber=request.user).filter(magazine_subscribed__id=mag)
+
+		if len(sub) != 0:
+			print "unsub"
+			name = sub[0].magazine_subscribed.name
+			print sub[0]
+			sub[0].delete()
+			return redirect("magazine:magazine", name)
+
+		print "sub"
+		sub = Subscription()
+
+		magazine = Magazine.objects.get(id=mag)
+		sub.subscriber = request.user
+		sub.magazine_subscribed = magazine
+		sub.save()
+
+		return redirect("magazine:magazine", sub.magazine_subscribed.name)

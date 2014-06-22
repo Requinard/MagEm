@@ -35,6 +35,12 @@ class Subscription(models.Model):
 
 	date_subscribed = models.DateTimeField(auto_now=True)
 
+	def __str__(self):
+		return self.subscriber.username.join(self.magazine_subscribed.name)
+
+	class Meta:
+		ordering = ("magazine_subscribed__name",)
+
 
 class Comment(models.Model):
 	article_related = models.ForeignKey(Article)

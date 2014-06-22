@@ -23,9 +23,9 @@
 					<h3>Magazine actions</h3>
 					<ul class="nav nav-sidebar">
 						{% if magazine in subscriptions %}
-							<li><a href="#">Subscribe</a></li>
+							<li><a href="{% url 'magazine:subscribe' mag.id %}">Subscribe</a></li>
 						{% else %}
-							<li><a href="#" class="unsubscribe" magazine="{{ mag.id }}">Unsubscribe</a></li>
+							<li><a href="{% url 'magazine:subscribe' mag.id %}">Unsubscribe</a></li>
 						{% endif %}
 						<li><a href="{% url 'magazine:submit' %}">Submit a link</a></li>
 					</ul>
@@ -40,7 +40,7 @@
 					{% if subscriptions %}
 						{% for sub in subscriptions %}
 							<li>
-								<a href="{% url "magazine:magazine" sub.subscribed_to.name %}">{{ sub.subscribed_to.name|capfirst }}</a>
+								<a href="{% url "magazine:magazine" sub.magazine_subscribed.name %}">{{ sub.magazine_subscribed|capfirst }}</a>
 							</li>
 						{% endfor %}
 					{% else %}
