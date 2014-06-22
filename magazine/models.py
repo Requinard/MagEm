@@ -25,10 +25,11 @@ class Article(models.Model):
 	magazine_posted = models.ForeignKey(Magazine)
 	date_submitted = models.DateTimeField(auto_now=True)
 
-	agreedness = models.IntegerField(default=0)
-	constructiveness = models.IntegerField(default=0)
+	agreedness = models.IntegerField(default=1)
+	constructiveness = models.IntegerField(default=1)
 
 	total_score = models.IntegerField(default=1)
+
 
 	def __str__(self):
 		return self.article_name

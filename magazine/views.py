@@ -1,5 +1,8 @@
+import math
+
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views.generic import View
+from django.utils import timezone
 
 from .models import *
 
@@ -13,8 +16,27 @@ class Functions:
 			context['user'] = request.user
 
 	@staticmethod
-	def ComputePostScore(request, context, article):
-		pass
+	def ComputePostScore(request, context, item):
+		# Amount of votes
+		agreedness = item.agreedness
+		constructiveness = item.constructiveness
+
+		total_score = 0
+
+		# Age
+		age = item.date_submitted
+		now = timezone.now()
+
+		age_diff = (now - age).total_seconds()
+		#Get total age in seconds since post
+		total_score += (math.log10(450 * agreedness) * 25)
+		total_score += (math.log10(450 * constructiveness) * 25)
+		total_score += ((age_diff / 1500) + 100)
+		total_score /= 3
+
+		item.total_score = total_score
+
+		item.save()
 
 
 class IndexView(View):
@@ -32,6 +54,10 @@ class MagazineView(View):
 		context['mag'] = get_object_or_404(Magazine, name=mag)
 		context['articles'] = Article.objects.filter(magazine_posted=context['mag'])
 
+		for article in context['articles']:
+			Functions.ComputePostScore(request, context, article)
+
+		context['articles'] = context['articles'].order_by("-total_score")
 		return render(self.request, "magazine/magazine.html", context)
 
 

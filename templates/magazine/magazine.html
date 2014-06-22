@@ -17,7 +17,9 @@
 					<p><b>Submitted on</b>: {{ article.date_submitted|date:"DATETIME_FORMAT" }}
 						<b>by</b> {{ article.posted_by.username }}</p>
 
-					<p><a href="{% url 'magazine:article' article.id %}">Comments</a></p>
+					<p><a href="{% url 'magazine:article' article.id %}">Comments</a>
+						<strong>Score:</strong>{{ article.total_score }} - {{ article.agreedness }}
+					                                                     - {{ article.constructiveness }}</p>
 				</div>
 			</div>
 		{% endfor %}

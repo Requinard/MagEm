@@ -35,6 +35,11 @@ class ArticleAdmin(admin.ModelAdmin):
 	"Article Info", {
 	"fields": ("hyperlink", "article_name")
 	}
+	),
+	(
+	"Votes", {
+	"fields": ("agreedness", "constructiveness", "total_score")
+	}
 	)
 	)
 
