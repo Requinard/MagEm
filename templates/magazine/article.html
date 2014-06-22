@@ -1,72 +1,69 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <h2>Article</h2>
-    <div class="row article">
-        <div class="col-sm-2 hidden-xs hidden-sm">
-            <nav class="circular-menu">
-                <div class="status-circle">
+	<h2>Article</h2>
+	<div class="row article">
+		<div class="col-sm-2 hidden-xs hidden-sm">
+			<nav class="circular-menu">
+				<div class="status-circle">
 
-                </div>
+				</div>
 
-                <a class="menu-button" onclick="showchildren('#ar{{ article.id }}')">
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </a>
-            </nav>
-        </div>
-        <div class="col-sm-9">
-            <h3><a href="{{ article.link }}" target="_blanks">{{ article.name }}</a></h3>
+				<a class="menu-button" onclick="showchildren('#ar{{ article.id }}')">
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+				</a>
+			</nav>
+		</div>
+		<div class="col-sm-9">
+			<h3><a href="{{ article.hyperlink }}" target="_blanks">{{ article.article_name }}</a></h3>
 
-            <p><b>Submitted on</b>: {{ article.submitted_on|date:"DATETIME_FORMAT" }}
-                <b>by</b> {{ article.submitted_by.username }}</p>
-        </div>
-    </div>
+			<p><b>Submitted on</b>: {{ article.date_submitted|date:"DATETIME_FORMAT" }}
+				<b>by</b> {{ article.posted_by.username }}</p>
+		</div>
+	</div>
 
-    <hr/>
+	<hr/>
 
-    <h3>Comments</h3>
-    {% if user.is_authenticated %}
-        <div class="row">
-            <form method="post" action="{% url "magazine:article" article.id %}">
-                {% csrf_token %}
+	<h3>Comments</h3>
+	{% if user.is_authenticated %}
+		<div class="row">
+			<form method="post" action="{% url "magazine:article" article.id %}">
+				{% csrf_token %}
 
-                <div class="col-sm-6">
-                    <label>Leave your own!</label>
-                    <textarea class="form-control" rows="3" name="text"></textarea>
-                    <button class="btn btn-primary">Submit</button>
-                </div>
-            </form>
-        </div>
-        <hr/>
-    {% endif %}
-    {% if comments %}
-        {% for comment in comments %}
-            <div class="row">
-                <div class="col-sm-12 panel-body">
-                    <div class="panel panel-default">
-                        <div class="panel-body">
-                            <p><b>Left by:</b> {{ comment.submitted_by }}
-                                <b>on</b> {{ comment.submitted_on|date:"DATETIME_FORMAT" }}</p>
+				<div class="col-sm-6">
+					<label>Leave your own!</label>
+					<textarea class="form-control" rows="3" name="text"></textarea>
+					<button class="btn btn-primary">Submit</button>
+				</div>
+			</form>
+		</div>
+		<hr/>
+	{% endif %}
+	{% if comments %}
+		{% for comment in comments %}
+			<div class="row">
+				<div class="col-sm-12">
+					<p><b>Left by:</b> {{ comment.posted_by }}
+						<b>on</b> {{ comment.date_created|date:"DATETIME_FORMAT" }}</p>
 
-                            <p>{{ comment.text }}</p>
-                        </div>
-                        {% if comment.children %}
-                            {% for child in comment.children. %}
-                                <div class="panel-body">
-                                    <p><b>Left by:</b> {{ child.submitted_by }}
-                                        <b>on</b> {{ child.submitted_on|date:"DATETIME_FORMAT" }}</p>
+					<p>{{ comment.post_body }}</p>
+				</div>
+				{% if comment.children %}
+					{% for child in comment.children %}
+						<div class="panel-body">
+							<p><b>Left by:</b> {{ child.submitted_by }}
+								<b>on</b> {{ child.submitted_on|date:"DATETIME_FORMAT" }}</p>
 
-                                    <p>{{ child.text }}</p>
-                                </div>
-                            {% endfor %}
-                            </div>
-                        {% endif %}
-                </div>
-            </div>
-        {% endfor %}
-    {% else %}
-        <h4>There doesn't seem to be anything here!</h4>
-    {% endif %}
+							<p>{{ child.bod }}</p>
+						</div>
+					{% endfor %}
+					</div>
+				{% endif %}
+			</div>
+		{% endfor %}
+	{% else %}
+		<h4>There doesn't seem to be anything here!</h4>
+	{% endif %}
 {% endblock %}

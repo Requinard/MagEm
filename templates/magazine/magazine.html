@@ -11,10 +11,11 @@
 					</div>
 				</div>
 				<div class="col-md-9">
-					<h3>{{ forloop.counter }}. <a href="{{ article.link }}" target="_blanks">{{ article.name }}</a></h3>
+					<h3>{{ forloop.counter }}. <a href="{{ article.hyperlink }}"
+					                              target="_blanks">{{ article.article_name }}</a></h3>
 
-					<p><b>Submitted on</b>: {{ article.submitted_on|date:"DATETIME_FORMAT" }}
-						<b>by</b> {{ article.submitted_by.username }}</p>
+					<p><b>Submitted on</b>: {{ article.date_submitted|date:"DATETIME_FORMAT" }}
+						<b>by</b> {{ article.posted_by.username }}</p>
 
 					<p><a href="{% url 'magazine:article' article.id %}">Comments</a></p>
 				</div>

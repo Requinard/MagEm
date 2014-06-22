@@ -12,6 +12,10 @@ class Functions:
 			context['subscriptions'] = subscription
 			context['user'] = request.user
 
+	@staticmethod
+	def ComputePostScore(request, context, article):
+		pass
+
 
 class IndexView(View):
 	def get(self, *args, **kwargs):
@@ -51,7 +55,7 @@ class SubmitView(View):
 
 			a.save()
 
-		return redirect("magazine:magazine", mag[0].name)
+		return redirect("magazine:magazine", mags[0])
 
 
 class ArticleView(View):
@@ -60,7 +64,8 @@ class ArticleView(View):
 		Functions.GetUserSubscriptions(request, context)
 
 		context['article'] = Article.objects.get(id=thread)
-		context['comments'] = Comment.objects.filter(article_on=context['article'])
+		context['mag'] = context['article'].magazine_posted
+		context['comments'] = Comment.objects.filter(article_related=context['article'])
 		return render(request, "magazine/article.html", context)
 
 	def post(self, request, thread):
@@ -72,7 +77,7 @@ class ArticleView(View):
 
 		comment.save()
 
-		return ("magazine:article", comment.article_related.id)
+		return redirect("magazine:article", comment.article_related.id)
 
 
 class CreateMagazineView(View):

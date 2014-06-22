@@ -22,7 +22,7 @@
 				{% if mag or article %}
 					<h3>Magazine actions</h3>
 					<ul class="nav nav-sidebar">
-						{% if magazine in subscriptions %}
+						{% if mag in subscriptions %}
 							<li><a href="{% url 'magazine:subscribe' mag.id %}">Subscribe</a></li>
 						{% else %}
 							<li><a href="{% url 'magazine:subscribe' mag.id %}">Unsubscribe</a></li>
@@ -49,8 +49,8 @@
 				</ul>
 
 			{% else %}
-				<form method="post" action="{% url 'magazine:login' %}">
-					<h3>Log in</h3>
+				<form method="post" action="{% url 'account:login' %}">
+				<h3>Log in</h3>
 					{% csrf_token %}
 					<input class="form-control" placeholder="user" name="user">
 					<input class="form-control" type="password" placeholder="password" name="password">
