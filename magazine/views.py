@@ -34,7 +34,7 @@ class Functions:
 			# Get total age in seconds since post
 			total_score += (math.log10(450 * agreedness) * 25)
 			total_score += (math.log10(450 * constructiveness) * 25)
-			total_score += ((age_diff / 1500) + 100)
+			total_score += (-(age_diff / 1500) + 100)
 			total_score = total_score / 3
 
 			item.total_score = total_score
