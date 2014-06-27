@@ -36,11 +36,6 @@ class ArticleAdmin(admin.ModelAdmin):
 	"fields": ("hyperlink", "article_name")
 	}
 	),
-	(
-	"Votes", {
-	"fields": ("agreedness", "constructiveness", "total_score")
-	}
-	)
 	)
 
 
@@ -50,17 +45,13 @@ class SubscriptionAdmin(admin.ModelAdmin):
 
 
 class CommentAdmin(admin.ModelAdmin):
-	list_display = ("id", "article_related", "posted_by")
-	list_filter = ("article_related", "posted_by")
+	readonly_fields = ("tally", )
 
 
-class VoteAdmin(admin.ModelAdmin):
-	list_display = ("id", "user_voted", "is_constructive", "is_agreed")
-	list_filter = ("is_constructive", "is_agreed", "user_voted")
 
 # Register your models here.
 admin.site.register(Magazine, MagazineAdmin)
 admin.site.register(Article, ArticleAdmin)
 admin.site.register(Subscription, SubscriptionAdmin)
 admin.site.register(Comment, CommentAdmin)
-admin.site.register(Vote, VoteAdmin)
+admin.site.register(Vote)

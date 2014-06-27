@@ -1,7 +1,15 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.db.models.signals import pre_save
 
 # Create your models here.
+class Tally(models.Model):
+	vote_agr = models.IntegerField(default=1)
+	vote_dis = models.IntegerField(default=1)
+	vote_con = models.IntegerField(default=1)
+	vote_des = models.IntegerField(default=1)
+
+
 class Magazine(models.Model):
 	name = models.CharField(max_length=20)
 
@@ -25,11 +33,7 @@ class Article(models.Model):
 	magazine_posted = models.ForeignKey(Magazine)
 	date_submitted = models.DateTimeField(auto_now=True)
 
-	agreedness = models.IntegerField(default=1)
-	constructiveness = models.IntegerField(default=1)
-
-	total_score = models.IntegerField(default=1)
-
+	tally = models.ForeignKey('Tally', null=True, default=None)
 
 	def __str__(self):
 		return self.article_name
@@ -54,10 +58,7 @@ class Comment(models.Model):
 	post_body = models.CharField(max_length=1024)
 	date_created = models.DateTimeField(auto_now=True)
 
-	agreedness = models.IntegerField(default=0)
-	constructiveness = models.IntegerField(default=0)
-
-	total_score = models.IntegerField(default=1)
+	tally = models.ForeignKey(Tally, null=True, default=None)
 
 	def __str__(self):
 		return self.post_body
@@ -86,3 +87,14 @@ class Vote(models.Model):
 		response = response.join(" by " + self.user_voted.username)
 
 		return response
+
+
+def extraInit(**kwargs):
+	instance = kwargs.get('instance')
+	tal = Tally()
+	tal.save()
+	instance.tally = tal
+
+
+pre_save.connect(extraInit, Article)
+pre_save.connect(extraInit, Comment)
