@@ -1,13 +1,71 @@
+from math import log, sqrt
+
 from django.db import models
 from django.contrib.auth.models import User
 from django.db.models.signals import pre_save
+from django.utils.timezone import now
+
 
 # Create your models here.
 class Tally(models.Model):
 	vote_agr = models.IntegerField(default=1)
-	vote_dis = models.IntegerField(default=1)
+	vote_dis = models.IntegerField(default=0)
 	vote_con = models.IntegerField(default=1)
-	vote_des = models.IntegerField(default=1)
+	vote_des = models.IntegerField(default=0)
+	date_created = models.DateTimeField()
+
+	def _hot(self):
+		"""
+		Will sort by hot ranking
+		:return: Returns score of tally
+		"""
+		print "starting hot"
+
+		score_agr = self.vote_agr - self.vote_dis
+		score_con = self.vote_con - self.vote_des
+
+		total = 0
+
+		sign_agr = 1 if score_agr > 0 else -1 if score_agr < 0 else 0
+		sign_con = 1 if score_agr > 0 else -1 if score_con < 0 else 0
+		seconds = (now() - self.date_created).total_seconds()
+
+		log_agr = log(max(abs(score_agr), 1), 10)
+		log_con = log(max(abs(score_con), 1), 10)
+
+		total += round(log_agr + sign_agr * seconds / 45000, 7)
+		total += round(log_con + sign_con * seconds / 45000, 7)
+
+		return total / 2
+
+	def _best(self):
+		print "starting best"
+		total_agr = self.vote_agr + self.vote_dis
+		total_con = self.vote_con + self.vote_des
+		total = 0
+
+		if total_agr == 0 or total_con == 0:
+			print "a value is 0"
+			return 0
+
+		z = 1.0
+		perc_agr = float(self.vote_agr) / total_agr
+		perc_con = float(self.vote_agr) / total_con
+
+		total += sqrt(perc_agr + z * z / (2 * total_agr) - z * (
+		(total_agr * (1 - total_agr) + z * z / (4 * total_agr)) / total_agr)) / (1 + z * z / total_agr)
+
+		total += sqrt(perc_con + z * z / (2 * total_con) - z * (
+		(total_con * (1 - total_con) + z * z / (4 * total_con)) / total_con)) / (1 + z * z / total_con)
+
+		return total / 2
+
+	def sort(self, sort_type = "hot"):
+		print sort_type
+		if sort_type == "hot":
+			return self._hot()
+		if sort_type == "best":
+			return self._best()
 
 
 class Magazine(models.Model):

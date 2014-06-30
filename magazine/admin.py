@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Magazine, Article, Subscription, Comment, Vote
+from .models import Magazine, Article, Subscription, Comment, Vote, Tally
 
 
 class MagazineAdmin(admin.ModelAdmin):
@@ -55,3 +55,4 @@ admin.site.register(Article, ArticleAdmin)
 admin.site.register(Subscription, SubscriptionAdmin)
 admin.site.register(Comment, CommentAdmin)
 admin.site.register(Vote)
+admin.site.register(Tally)
