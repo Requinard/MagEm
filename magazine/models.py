@@ -12,7 +12,7 @@ class Tally(models.Model):
 	vote_dis = models.IntegerField(default=0)
 	vote_con = models.IntegerField(default=1)
 	vote_des = models.IntegerField(default=0)
-	date_created = models.DateTimeField()
+	date_created = models.DateTimeField(auto_now=True)
 
 	def _hot(self):
 		"""
