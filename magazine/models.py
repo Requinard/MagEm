@@ -131,20 +131,8 @@ class Vote(models.Model):
 	date_submitted = models.DateTimeField(auto_now=True)
 
 	def __str__(self):
-		response = self.article_related.article_name
-		if self.is_constructive == True:
-			response += " Constructive "
-		else:
-			response += " Destructive "
+		return self.article_related.article_name
 
-		if self.is_agreed == True:
-			response += "Agree"
-		else:
-			response += "Disagree"
-
-		response = response.join(" by " + self.user_voted.username)
-
-		return response
 
 
 def extraInit(**kwargs):
